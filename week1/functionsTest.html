@@ -18,8 +18,13 @@
         document.writeln( fun2() !== 1  );
         document.writeln( fun2() === undefined );
         document.writeln( fun2(42) === 42 );
-
-        function noReturn()     { 1; }
+        
+        // Own test
+        function fun3()    { return arguments[0] ?? 1; }
+        document.writeln( fun3(42) === 42 );
+        document.writeln( fun3() === 1 );
+        
+        function noReturn()    { 1; }
         const noReturn2 = () => { 1; };
         const noReturn3 = () => 1;
 
