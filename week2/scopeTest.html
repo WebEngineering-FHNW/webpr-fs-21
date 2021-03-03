@@ -7,6 +7,25 @@
 <body>
     <script>
 
+        const x = 1;
+        // starts here
+        ( () => {
+            const x = 2;
+            console.log(x);
+        }) (); // IIFE
+        // ends here
+
+        document.writeln(x === 1);
+
+        const id    = x => x;
+        const konst = x => y => x;
+
+        const kite  = konst(id);
+
+        document.writeln(id(id) === id);
+        document.writeln(konst(id)(undefined) === id);
+        document.writeln(kite(undefined)(id) === id);
+
 
 
 
