@@ -8,8 +8,15 @@ const T     = konst;
 const F     = snd;
 
 const and   = p => q => p ( q ) ( p ) ;
+const or    = p => q => p ( p ) ( q );
 
+const Pair  = x => y => f => f (x) (y); // Vireo, V
+const firstname = konst;
+const lastname  = snd;
 
+const Left  = x => f => g => f(x);
+const Right = x => f => g => g(x);
+const either = e => bad => good => e (bad) (good);
 
 
 // ----- special -----

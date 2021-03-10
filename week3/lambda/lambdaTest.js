@@ -41,9 +41,9 @@ ok.push( or(T)(T) === T );
 //
 // // Pair
 //
-// const dierk = Pair("Dierk")("König"); // immutable
-// ok.push( dierk(firstname) === "Dierk");
-// ok.push( dierk(lastname)  === "König");
+const dierk = Pair("Dierk")("König"); // immutable
+ok.push( dierk(firstname) === "Dierk");
+ok.push( dierk(lastname)  === "König");
 //
 // const tdierk = Triple("Dierk")("König")(50); // immutable
 // ok.push( tdierk(tfirstname) === "Dierk");
@@ -73,9 +73,9 @@ const safeDiv = num => divisor =>
     ? Left("schlecht!")
     : Right(num / divisor);
 
-// either( safeDiv(1)(0)  )
-//       ( x => console.error(x))
-//       ( x => console.log(x));
+either( safeDiv(1)(0)  )
+      ( x => console.error(x))
+      ( x => console.log(x));
 
 //
 // const [Cash, CreditCard, Invoice, PayPal, pay] = Choice(4);
