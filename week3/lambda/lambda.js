@@ -1,3 +1,14 @@
+const id    = x => x;
+const konst = x => y => x; // Kestrel, K
+const snd   = x => y => y; // Kite,    KI
+
+// const T     = x => y => x;
+// const F     = x => y => y;
+const T     = konst;
+const F     = snd;
+
+const and   = p => q => p ( q ) ( p ) ;
+
 
 
 
