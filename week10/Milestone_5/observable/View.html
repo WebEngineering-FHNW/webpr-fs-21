@@ -9,18 +9,15 @@
 <input id="name" type="text">
 <div id="label"></div>
 <div id="size"></div>
-<div id="size1"></div>
 
 <script>
     const nameInput = document.getElementById("name");
     const label     = document.getElementById("label");
     const size      = document.getElementById("size");
-    const size1      = document.getElementById("size1");
 
     const inputAttr = Observable("");
     inputAttr.onChange(val => label.innerText  = val);
     inputAttr.onChange(val => size.innerText   = val.length);
-    inputAttr.onChange(val => size1.innerText   = val.length * 2);
 
     nameInput.oninput = _ => inputAttr.setValue(nameInput.value);
 
