@@ -53,4 +53,31 @@ test("util-refresher", assert => {
     assert.is(hasTrue(trueBools),  true);
     assert.is(hasTrue(falseBools), false);
 
+    const hasTrue2 = bools => bools.find( bool => bool ) !== undefined;
+    assert.is(hasTrue2([]), false);
+    assert.is(hasTrue2([true]), true);
+    assert.is(hasTrue2([false]), false);
+    assert.is(hasTrue2(mixedBools), true);
+    assert.is(hasTrue2(trueBools),  true);
+    assert.is(hasTrue2(falseBools), false);
+
+    // const foo = ["a", "b", "c", "d", "b", "c", "d"];
+    // foo.find( it => {
+    //     console.log(it);
+    //     return it === "d";
+    // });
+
+    const arrayIsEqual = (first, second) => {
+        if (first.length !== second.length) {
+            return false;
+        }
+        return first.every( (it, idx) => it === second[idx] )
+    }
+    assert.is(arrayIsEqual([],[]),      true);
+    assert.is(arrayIsEqual([1],[]),     false);
+    assert.is(arrayIsEqual(["0"],[0]),  false);
+    assert.is(arrayIsEqual(ary,cpy),    true);
+
+
+
 });
