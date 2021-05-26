@@ -21,5 +21,14 @@ test("util-refresher", assert => {
     const prod = ary.reduce( (acc, current) => acc * current, 1);
     assert.is(prod, 0);
 
+    const cpy = ary.reduce( (acc, current) => {
+        acc.push(current);
+        return acc;
+    }, []);
+    assert.is(ary.length , cpy.length);
+    assert.is(ary[0]     , cpy[0]);
+    assert.is(ary[-1]    , cpy[-1]);
+
+    // array.reverse mit reduce
 
 });
