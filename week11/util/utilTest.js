@@ -21,16 +21,13 @@ test("util-refresher", assert => {
     const prod = ary.reduce( (acc, current) => acc * current, 1);
     assert.is(prod, 0);
 
-    const cpy = ary.reduce( (acc, current) => {
-        acc.push(current);
-        return acc;
-    }, []);
+    const cpy = ary.reduce( (acc, current) => [...acc, current], []);
     assert.is(ary.length , cpy.length);
     assert.is(ary[0]     , cpy[0]);
     assert.is(ary[ary.length-1]    , cpy[ary.length-1]);
 
     // array.reverse mit reduce
-    const rvs = ary.reduce((acc, current) => (acc.unshift(current), acc), []);
+    const rvs = ary.reduce((acc, current) => [current, ...acc], []);
     assert.is(ary.length            , rvs.length);
     assert.is(ary[0]                , rvs[ary.length-1]);
     assert.is(ary[ary.length-1]     , rvs[0]);
