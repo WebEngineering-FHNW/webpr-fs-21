@@ -32,12 +32,6 @@ test("util-refresher", assert => {
     assert.is(ary[0]                , rvs[ary.length-1]);
     assert.is(ary[ary.length-1]     , rvs[0]);
 
-    // variante mit rest operator
-    const rvs2 = ary.reduce((acc, current) => [current, ...acc], []);
-    assert.is(ary.length        , rvs2.length);
-    assert.is(ary[0]            , rvs2[ary.length-1]);
-    assert.is(ary[ary.length-1] , rvs2[0]);
-
     const mixedBools = [true, false, false, true, false];
     const trueBools  = [true, true, true];
     const falseBools = [false, false, false, false];
