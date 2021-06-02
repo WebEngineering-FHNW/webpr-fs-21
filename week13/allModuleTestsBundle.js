@@ -131,59 +131,100 @@ modSuite.add("singleton", assert => {
 
 modSuite.run();
 
-/**
- * @module Person (just an immutable product type)
- */
+// execute asynchronous tasks in strict sequence, aka "reactive stream", "flux architecture"
+const Scheduler = () => {
+    let inProcess = false;
+    const tasks = [];
+    function process() {
+        if (inProcess) { return; }
+        if (tasks.length === 0) { return; } // guard clause
+        inProcess = true;
+        const task = tasks.pop();
+        const doit = new Promise( (resolve, reject) => {
+            task(resolve);
+        }). then ( () => {
+            inProcess = false;
+            process();
+        });
+    }
+    function add(task) {
+        tasks.unshift(task);
+        process();
+    }
+    return {
+        add: add,
+        addOk: task => add( ok => { task(); ok(); }) // convenience
+    }
+};
 
-// ctor
 
-const Person =
-    firstname =>
-    lastname  =>
-    Object.seal( selector  => selector (firstname) (lastname) );
+// a dataflow abstraction that is not based on concurrency but on laziness
 
+const DataFlowVariable = howto => {
+    let value = undefined;
+    return () => undefined === value
+                 ? value = howto()
+                 : value;
+};
 
-// getters
+// requires dataflow.js
 
-const firstname = firstname => _ => firstname;
-const lastname  = _ => lastname  => lastname;
-const setLastname  = person => ln => Person (person(lastname)) (ln);
+const suite = Suite("dataflow");
+suite.add("scheduler", assert => {
 
-// module "methods"
+    const result = [];
 
-const toString = person => 'Person ' + person(firstname) + " " +  person(lastname);
+    const scheduler = Scheduler();
+    scheduler.add(ok => {
+        setTimeout(_ => {   // we wait before pushing
+            result.push(1);
+            ok();
+        }, 100);
+    });
+    scheduler.add(ok => {   // we push "immediately"
+        result.push(2);
+        ok();
+    });
+    scheduler.addOk ( () => result.push(3)); // convenience
 
-const equals   = p1 => p2 =>
-    p1(firstname) === p2(firstname) &&
-    p1(lastname)  === p2(lastname);
+    scheduler.add(ok => {
+        assert.is(result[0], 1); // sequence is still ensured
+        assert.is(result[1], 2);
+        assert.is(result[2], 3);
+    });
 
-const toObj = person => ({
-   firstname: person(firstname),
-   lastname:  person(lastname)
+    assert.true(true); // any assertion error will appear in the console, not in the report
+
 });
 
-const toPerson = personObj => Person (personObj.firstname) (personObj.lastname);
+suite.add("value", assert => {
 
-// todo: the line below should be uncommented
+    const z = DataFlowVariable(() => x() + y());   // z depends on x and y, which are set later...
+    const x = DataFlowVariable(() => y());         // x depends on y, which is set later...
+    const y = DataFlowVariable(() => 1);
 
-const person = Suite("person");
-
-person.test("use", assert => {
-
-    const dierk = Person ("Dierk") ('König');
-
-    assert.is(dierk(firstname), "Dierk");
-
-    const gently = setLastname(dierk)("Gently");
-
-    assert.is( gently(lastname), "Gently");
-
-    assert.true(   equals (dierk) (dierk)  );
-    assert.true( ! equals (dierk) (gently) );
-
-    assert.true( equals (dierk) (toPerson(toObj(dierk))) );
-    assert.is( toString(dierk), 'Person Dierk König');
+    assert.is(z(), 2);
+    assert.is(x(), 1);
+    assert.is(y(), 1);
 
 });
+
+suite.add("cache", assert => { // value must be set at most once
+
+    let counter = 0;
+    const x = DataFlowVariable(() => {
+        counter++;
+        return 1;
+    });
+
+    assert.is(counter, 0);
+    assert.is(x(), 1);
+    assert.is(counter, 1);
+    assert.is(x(), 1);
+    assert.is(counter, 1);
+
+});
+
+suite.run();
 
 // importing all tests that make up the suite of tests that are build on the ES6 module system
